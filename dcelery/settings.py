@@ -54,14 +54,24 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'dcelery.wsgi.application'
 
+# Now we are useing postgrace
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DATABASE_NAME', 'your_database_name'),
+        'USER': os.getenv('DATABASE_USER', 'your_database_user'),
+        'PASSWORD': os.getenv('DATABASE_PASSWORD', 'your_database_password'),
+        'HOST': os.getenv('DATABASE_HOST', 'localhost'),  # Set 'postgres_db' if using Docker Compose
+        'PORT': os.getenv('DATABASE_PORT', '5432'),
     }
 }
-
 
 AUTH_PASSWORD_VALIDATORS = [
     {

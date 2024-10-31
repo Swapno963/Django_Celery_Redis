@@ -1,26 +1,23 @@
-# Use the specified Python base image
-FROM python:3.14.0a1-alpine3.20
+# Dockerfile
 
-# Set the working directory in the container
+FROM python:3.8  
+
+# Set working directory
 WORKDIR /usr/src/app
 
-# Prevent Python from writing .pyc files
-ENV PYTHONDONTWRITEBYTECODE=1
+# Install system dependencies
+RUN apt-get update && \
+    apt-get install -y libpq-dev gcc && \
+    rm -rf /var/lib/apt/lists/*
 
-# Ensure Python output is sent directly to the terminal without buffering
-ENV PYTHONUNBUFFERED=1
+# Copy requirements.txt
+COPY requirements.txt .
 
-# Upgrade pip and install dependencies
-RUN pip install --upgrade pip
-COPY ./requirements.txt /usr/src/app/requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt  # Use --no-cache-dir to save space
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy entrypoint script and give execution permission
-COPY ./entrypoint.sh /usr/src/app/entrypoint.sh
-RUN chmod +x /usr/src/app/entrypoint.sh  # Ensure the entrypoint script is executable
+# Copy project files
+COPY . .
 
-# Copy the rest of the application code
-COPY . /usr/src/app/
-
-# Set the entrypoint to the script
-ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
+# Command to run Django server
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
