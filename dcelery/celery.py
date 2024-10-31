@@ -11,7 +11,7 @@ app.config_from_object("django.fonf:settings", namespace="CELERY")
 
 @app.task
 def add_numbers():
-    return 
+    return 1 + 2
 
 
 app.autodiscover_tasks()
